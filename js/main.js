@@ -8,7 +8,8 @@ $(document).ready(function() {
                 [{ header: [1, 2, false] }],
                 ['bold', 'italic', 'underline', 'strikeout'],
                 ['image', 'code-block', 'datamerge'],
-            ]
+            ],
+            datamerge: true
         },
         placeholder: 'Compose an epic...',
         theme: 'snow'  // or 'bubble'
