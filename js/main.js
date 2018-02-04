@@ -14,7 +14,7 @@ $(document).ready(function() {
                 handlers:  {
                     'datamerge': function() {
                         let dm = quill.getModule('datamerge');
-                        console.log(dm);
+                        dm.openConfDialog({range: quill.getSelection()});
                     }
                 }
             },
