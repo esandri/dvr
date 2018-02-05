@@ -1,6 +1,12 @@
 let Parchment = Quill.import('parchment');
 
 class DataMergeModule {
+    constructor(quill, options = {}) {
+        this.quill = quill;
+        this.options = options;
+        this.register();
+    }
+
     register() {
         Quill.register(DataMergeBlot, true);
         this.confDialog_id = 'datamerge-' + Math.floor(Math.random() * 999999);
@@ -15,8 +21,12 @@ class DataMergeModule {
             this.closeConfDialog();
         });
         $('#' + this.confDialog_id + ' .datamerge-confDialog-ok').click((ev) => {
-            let name = $('#' + this.confDialog_id + ' .datamerge-confDialog-name').val();
-            this.quill.insertEmbed(this.confDialog.range.index, 'datamerge', {path: name}, Quill.sources.USER)
+            let path = $('#' + this.confDialog_id + ' .datamerge-confDialog-name').val();
+            if (this.confDialog.blot) {
+                this.confDialog.blot.format('path',path);
+            } else {
+                this.quill.insertEmbed(this.confDialog.range.index, 'datamerge', {path: path}, Quill.sources.USER)
+            }
             this.closeConfDialog();
         });
 
@@ -26,16 +36,46 @@ class DataMergeModule {
             }
         };
 
-        this.quill.root.addEventListener('click', function (ev) {
+        this.quill.root.addEventListener('click', (ev) => {
             const blot = Parchment.find(ev.target);
             if (blot instanceof DataMergeBlot) {
-                this.openConfDialog();
+                this.openConfDialog({blot: blot});
             }
         });
 
     }
+
+    setModel(model) {
+        this.model = model;
+    }
+
+    showData() {
+        let dmlist = quill.editor.scroll.descendants(DataMergeBlot);
+        for(let i = 0; i < dmlist.length; i++) {
+            let blot = dmlist[i];
+            blot.showData(this.model);
+        }
+    }
+
+    // dialog operations
     openConfDialog(options) {
+        this.confDialog.blot = options.blot;
         this.confDialog.range = options.range||{index:0};
+
+        const pathList = this.model.getPathList();
+        const select_elem = $('#' + this.confDialog_id + ' .datamerge-confDialog-name')[0];
+
+        // clear select
+        select_elem.innerHTML = '';
+
+        for(let i = 0; i < pathList.length; i++) {
+            let path = pathList[i];
+            let opt = document.createElement('option')
+            opt.value = path.name;
+            opt.innerHTML = path.description + ' - ' + path.type;
+            select_elem.appendChild(opt);
+        }
+
         this.confDialog.style.display = "block";
     };
 
@@ -43,19 +83,16 @@ class DataMergeModule {
         this.confDialog.style.display = "none";
     };
 
-    constructor(quill, options = {}) {
-        this.quill = quill;
-        this.options = options;
-        this.register();
-    }
-
 }
-
-Quill.register('modules/datamerge', DataMergeModule);
 
 const DataMergeModule_template =
     `<div class="datamerge-confDialog-content">
         <span class="datamerge-confDialog-close">&times;</span>
-        <input type="text" value="office.person" placeholder="inset the data name" class="datamerge-confDialog-name"/>
+        <select class="datamerge-confDialog-name"></select>
         <input type="button" value="ok" class="datamerge-confDialog-ok"/>
     </div>`;
+
+class DataMergeModel {
+    getData(path){};
+    getPathList(){};
+}

@@ -1,13 +1,15 @@
 
-
+let quill = null;
 $(document).ready(function() {
 
-    var quill = new Quill('#editor', {
+    Quill.register('modules/datamerge', DataMergeModule);
+
+    quill = new Quill('#editor', {
         modules: {
             toolbar: {
                 container: [
                     [{ header: [1, 2, false] }],
-                    ['bold', 'italic', 'underline', 'strikeout'],
+                    ['bold', 'italic', 'underline'],
                     ['image', 'code-block'],
                     ['datamerge']
                 ],
@@ -24,10 +26,9 @@ $(document).ready(function() {
         theme: 'snow'  // or 'bubble'
     });
 
-    $('.ql-strikeout').html('e');
-    $('.ql-datamerge').html('d');
+    let dm = quill.getModule('datamerge');
+    dm.setModel(new HSEModel());
+
+    $('.ql-datamerge').html('{}');
 
 });
-
-
-
