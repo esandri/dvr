@@ -26,6 +26,41 @@ class HSEModel extends DataMergeModel {
         ];
     }
 
+    /**
+     * return the direct child of a path filtered by type
+     * @param path string
+     * @param filter object the filter to apply
+     *                      - listTypes array list of type that we want
+     *                      - include boolean if true extract only the given list types
+     *                                        if false extract the list types not presents on listTypes
+     * @return array the list of path (relative)
+     */
+    getChildren (path, filter) {
+        let result = [];
+        const list = this.getPathList();
+        for (let i = 0; i < list.length; i++) {
+            let p = list[i];
+            let present = filter.listTypes.indexOf(p.type) >= 0;
+            let satisfied = filter.include ? present:!present;
+            if (satisfied) {
+                result.push(p);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * return the list of fields for the given path (probably only for object)
+     * @param path
+     */
+    getFields(path) {
+        const list = this.getChildren(path, {
+            listTypes: ['array', 'object'],
+            include: false
+        });
+        return list;
+    }
+
     getData(path) {
         return HSEModel.byString(this.data, path);
     }

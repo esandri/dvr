@@ -9,6 +9,7 @@ class DataMergeModule {
 
     register() {
         Quill.register(DataMergeBlot, true);
+        Quill.register(DataMergeListBlot, true);
         this.confDialog_id = 'datamerge-' + Math.floor(Math.random() * 999999);
         this.confDialog = document.createElement('div');
         this.confDialog.setAttribute('id',this.confDialog_id);
@@ -38,19 +39,24 @@ class DataMergeModule {
 
         this.quill.root.addEventListener('click', (ev) => {
             const blot = Parchment.find(ev.target);
-            if (blot instanceof DataMergeBlot) {
+            if (blot instanceof DataMergeListBlot || blot instanceof DataMergeBlot) {
                 this.openConfDialog({blot: blot});
             }
         });
 
     }
 
+    /**
+     * Set the model for datamerge of this document
+     * @param DataMergeModel model
+     */
     setModel(model) {
         this.model = model;
     }
 
     showData() {
         let dmlist = quill.editor.scroll.descendants(DataMergeBlot);
+        dimlist.push(quill.editor.scroll.descendants(DataMergeListBlot);
         for(let i = 0; i < dmlist.length; i++) {
             let blot = dmlist[i];
             blot.showData(this.model);
