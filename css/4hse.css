@@ -2,18 +2,22 @@
 
 }
 
-.datamerge-elem {
+.datamerge-elem-code {
     background-color: #888888;
     display: table;
     width: fit-content;
 }
 
-.datamerge-elem:after {
+.datamerge-elem-code:after {
     content: '}';
 }
 
-.datamerge-elem:before {
+.datamerge-elem-code:before {
     content: '{';
+}
+
+.datamerge-elem-render {
+    display: none;
 }
 
 .datamerge-confDialog {
@@ -36,7 +40,7 @@
     margin: 15% auto; /* 15% from the top and centered */
     padding: 20px;
     border: 1px solid #888;
-    width: 80%; /* Could be more or less, depending on screen size */
+    width: 400px; /* Could be more or less, depending on screen size */
 }
 
 /* The Close Button */
